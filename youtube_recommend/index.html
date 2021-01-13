@@ -1,0 +1,588 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <title>Teste Encaminhamentos Ena</title>
+        
+        <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+        <script src="https://cdn.anychart.com/releases/v8/js/anychart-tag-cloud.min.js"></script>
+
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+  
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+        
+        <style>
+            .active-pink-2 input.form-control[type=text]:focus:not([readonly]) {
+            border-bottom: 1px solid #f48fb1;
+            box-shadow: 0 1px 0 0 #f48fb1;
+            }
+            .active-pink input.form-control[type=text] {
+            border-bottom: 1px solid #f48fb1;
+            box-shadow: 0 1px 0 0 #f48fb1;
+            }
+            .active-purple-2 input.form-control[type=text]:focus:not([readonly]) {
+            border-bottom: 1px solid #ce93d8;
+            box-shadow: 0 1px 0 0 #ce93d8;
+            }
+            .active-purple input.form-control[type=text] {
+            border-bottom: 1px solid #ce93d8;
+            box-shadow: 0 1px 0 0 #ce93d8;
+            }
+            .active-cyan-2 input.form-control[type=text]:focus:not([readonly]) {
+            border-bottom: 1px solid #4dd0e1;
+            box-shadow: 0 1px 0 0 #4dd0e1;
+            }
+            .active-cyan input.form-control[type=text] {
+            border-bottom: 1px solid #4dd0e1;
+            box-shadow: 0 1px 0 0 #4dd0e1;
+            }
+
+            .modal-dialog,
+            .modal-content {
+                /* 80% of window height */
+                height: 97%;
+            }
+
+            .modal-body {
+                /* 100% = dialog height, 120px = header + footer */
+                max-height: calc(100% - 120px);
+                overflow-y: scroll;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modal_title" class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pdf-tab" data-toggle="tab" href="#tab_pdf_view" role="tab" aria-controls="home" aria-selected="true">Resumo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="youtube-tab" data-toggle="tab" href="#tab_youtube_view" role="tab" aria-controls="profile" aria-selected="false">Vídeo de apresentação</a>
+                    </li>
+                </ul>
+                <!-- <object data="resume.pdf" type="application/pdf" width="100%" height="800px"> 
+                    <p>It appears you don't have a PDF plugin for this browser.
+                        No biggie... you can <a href="AnlisedeDadosEstatsticosdaGradeAcadmicapdf.pdf">click here to
+                    download the PDF file.</a></p>  
+                </object> -->
+
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="tab_pdf_view">
+                        <embed src="AnlisedeDadosEstatsticosdaGradeAcadmicapdf.pdf"
+                            width="100%" height="90%" alt="pdf" id="embed_pdf"
+                            pluginspage="http://www.adobe.com/products/acrobat/readstep2.html">
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="tab_youtube_view">
+                        <!-- <iframe width="100%" height="90%"
+                        src="https://www.youtube.com/watch?v=ZLvi6EZ5ElI">
+                        </iframe>  -->
+                        <div class="actualyoutube">
+                            <iframe width="100%" height="90%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="modal-footer"> -->
+                <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button> -->
+            <!-- </div> -->
+            </div>
+        </div>
+        </div>
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="buscatsne-tab" data-toggle="tab" href="#tab_busca_tsne_view" role="tab" aria-controls="home" aria-selected="true">Busca por similaridade</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="buscatab-tab" data-toggle="tab" href="#tab_busca_tabular_view" role="tab" aria-controls="profile" aria-selected="false">Busca por tabela</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="tab_busca_tsne_view">
+                <div class="container">
+                    
+                    <div class="card m-3 mb-1">
+                        <div class="card-body">
+                        <h5 class="card-title">Representação dos vídeos (A partir do texto das legendas)</h5>
+                        <p class="card-text">
+                            Digite os termos desejados para destacar os trabalhos (cada termo pode conter mais de uma palavra).
+                            <br>
+                            Os termos devem estar separados por <b>,</b> (vírgulas).
+                            <br>
+                            Após clicar em "Procurar trabalhos com os termos", apenas os trabalhos destacados conterão em seus textos todos os termos especificados.
+                        </p>
+                        <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+                        </div>
+                    </div>
+                    
+                    <div class="container col-md-12">
+                        
+                        
+                    </div>
+        
+                    <div class="row mt-3">
+                        <div class="col-md-6 md-form active-purple active-purple-2">
+                            <input id="key_word" class="form-control" type="text" placeholder="palavra1,palavra2,palavra3,..." aria-label="palavra1,palavra2,palavra3,...">
+                        </div>
+                        <button id="search_button" type="button" class="col-md-6 btn btn-secondary btn-sm">Procurar trabalhos com os termos</button>
+                    </div>
+        
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <p>
+                                Tipo de agrupamento (cores no gráfico)
+                            </p>
+                        </div>
+                        <select class="form-control col-md-6" id="cluster_selector">
+                        </select>
+                    </div>
+                    
+                    <div id="ploter" style="width:95%;height:80%;"></div>
+                </div>
+        
+                <div class="row mx-auto d-flex p-2 text-center col-12">
+                    <p class="text-center col-6">
+                        Nuvem de palavras frequentes presentes nos textos
+                    </p>
+                    <div class="text-center col-6">
+                        <select class="form-control col-md-12" id="word_cloud_selector">
+                        </select>
+                    </div>
+                </div>
+                <div id="container_wordcloud"></div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="tab_busca_tabular_view">
+                <br>
+                <table id="example" class="display" width="100%"></table>
+            </div>
+        </div>
+    </body>
+
+    <script>
+        var json_data = null;
+
+        function get_youtube_video_id(url){
+            if(url.includes("youtube.com")){
+                var video_id = url.split('v=')[1];
+                var ampersandPosition = video_id.indexOf('&');
+                if(ampersandPosition != -1) {
+                    video_id = video_id.substring(0, ampersandPosition);
+                }
+                return video_id;
+            }
+            else if (url.includes("youtu.be")){
+                var splt_url = url.split("/");
+                return splt_url[splt_url.length-1];
+            }
+            else{
+                console.log("Ops! Parece que houve um erro ao acessar o link do vídeo de apresentação no youtube.");
+                return url;
+            }
+        }
+
+        function selector_option_template(id, option_name, option_value, attributes){
+            return "<option "+attributes+" value='"+option_value+"'>\
+                        "+option_name+"\
+                    </option>";
+        }
+        
+        function reload_wordcloud_cluster_option(){
+            $("#word_cloud_selector").html("");
+            $("#word_cloud_selector").on('change', function(){
+                update_word_cloud_option("default");
+            });
+            
+            var cluster_id = $("#cluster_selector").val();
+
+            var id = 0;
+            var dataY = json_data.cluster_options[cluster_id];
+            var set_dataY = Array.from(new Set(dataY));
+
+            var option_instance_attributes = "selected";
+            var option_instance = $(selector_option_template(
+                    id,"Todos os trabalhos","Todos",option_instance_attributes));
+
+            $("#word_cloud_selector").append(option_instance);
+
+            for(var i in set_dataY){
+                var level_name = set_dataY[i];
+                var y = dataY[set_dataY[i]];
+                
+                // var group_name = "Grupo "+i.toString();
+                // var group_name = i;
+
+
+                var option_instance_attributes = "";
+
+                var option_instance = $(selector_option_template(
+                    id,level_name,level_name,option_instance_attributes));
+
+                $("#word_cloud_selector").append(option_instance);
+                id+=1;
+            }
+        }
+
+        function reload_cluster_option(){
+            
+            $("#cluster_selector").html("");
+            $("#cluster_selector").on('change', function(){
+                update_cluster_option("default");
+            });
+            
+            var id = 0;
+
+            var option_instance_attributes = "selected";
+            var option_instance = $(selector_option_template(
+                                    id,
+                                    json_data.cluster_options_keys_order[0],
+                                    json_data.cluster_options_keys_order[0],
+                                    option_instance_attributes));
+
+            $("#cluster_selector").append(option_instance);
+
+            for(var i in json_data.cluster_options_keys_order){
+                if(i == 0) continue;
+                var y = json_data.cluster_options_keys_order[i];
+
+                var option_instance_attributes = "";
+
+                var option_instance = $(selector_option_template(
+                    id,y,y,option_instance_attributes));
+
+                $("#cluster_selector").append(option_instance);
+                id+=1;
+            }
+        }
+
+        function update_word_cloud_option(){
+            var group_id = $("#word_cloud_selector").val();
+            $("#container_wordcloud").html("");
+            var cluster_id = $("#cluster_selector").val();
+
+            anychart.onDocumentReady(function() {
+                var wordcloud_data = json_data.wordcloud_data;
+                var subject_wordclout = "Todos";
+                if(group_id != "Todos"){
+                    // var group_name = "Grupo "+ group_id.toString();
+                    wordcloud_data = json_data.wordcloud_clusters[cluster_id][group_id];
+                    subject_wordclout = group_id;
+
+                }
+                var chart = anychart.tagCloud(wordcloud_data);// set a chart title
+                chart.title('Palavras mais frequentes nos resumos: '+subject_wordclout);
+                // set an array of angles at which the words will be laid out
+                chart.angles([0]);
+                // enable a color range
+                // chart.colorRange(true);
+                // set the color range length
+                chart.colorRange().length('80%');// display the word cloud chart
+                chart.container("container_wordcloud");
+                chart.draw();
+            });
+            return;
+        }
+
+        function update_cluster_option(){
+            var cluster_id = $("#cluster_selector").val();
+
+            var dataY = json_data.cluster_options[cluster_id];
+            // var dataY = json_data.cluster_options[0];
+            
+            var set_dataY = Array.from(new Set(dataY));
+            var traces = [];
+            for(var label_id in set_dataY){
+                var label = set_dataY[label_id];
+                // var group_name = "Grupo "+label;
+                
+                var group_name = label;
+                
+                var class_points = json_data.emb2d.filter((x,i) => {
+                    return label == dataY[i];
+                });
+                var class_display_text_list = json_data.display_text_list.filter((x,i)=> {
+                    return label == dataY[i];
+                });
+                var class_file_path_list = json_data.file_path_list.filter((x,i)=> {
+                    return label == dataY[i];
+                });
+                var class_youtube_link = json_data.youtube_link.filter((x,i)=> {
+                    return label == dataY[i];
+                });
+                var class_description = json_data.description.filter((x,i)=> {
+                    return label == dataY[i];
+                });
+
+                var x_pos = class_points.map(x=>{return x[0]});
+                var y_pos = class_points.map(x=>{return x[1]});
+                // console.log(x_pos);
+                // console.log(class_file_path_list);
+
+                var trace = {
+                    x: x_pos,
+                    y: y_pos,
+                    text: class_display_text_list,
+                    file_path: class_file_path_list,
+                    youtube_link: class_youtube_link,
+                    description: class_description,
+                    mode: 'markers',
+                    type: 'scatter',
+                    name: group_name,
+                    hoverinfo: "text",
+                    marker: { size: 9 }
+                };
+                traces.push(trace);
+            }
+            
+
+            // var data = [trace];
+
+            var config = {
+                showEditInChartStudio: true,
+                plotlyServerURL: "https://chart-studio.plotly.com",
+                showLink: true,
+                linkText: 'Abrir dados no Chart-Studio'
+            };
+            var layout = {
+                'hovermode': 'closest',
+                "ticks":"",
+                "xaxis": {showgrid: false, 'zeroline': false, 'visible': false},
+                "yaxis": {showgrid: false, 'zeroline': false, 'visible': false},
+            }
+            Plotly.newPlot('ploter', traces, layout, config);
+
+            $("#search_button").click(x=>{
+                reload_search($("#key_word").val());
+            });
+
+            set_plotly_handlers();
+            
+            reload_wordcloud_cluster_option();
+            update_word_cloud_option(); // Set the initial wordcloud for all works
+        }
+
+        function set_plotly_handlers(){
+            var myPlot = document.getElementById("ploter");
+            myPlot.on('plotly_click', function(data){
+                var pts = '';
+                // console.log(data);
+                $("#modal_title").html(data.points[0].text.replaceAll("<br>",""));
+                var pointIndex = data.points[0].pointIndex;
+                // var url_video_paper = "https://www.youtube.com/watch?v=ZLvi6EZ5ElI&";
+                var url_video_paper = data.points[0].data.youtube_link[pointIndex];
+
+                // $("#embed_pdf").attr("src", data.points[0].data.file_path[pointIndex]);
+                $("#embed_pdf").html(data.points[0].data.description[pointIndex]);
+                // console.log(data);
+                // console.log(data.points[0].data.file_path[pointIndex]);
+                $("#exampleModal").modal();
+                var video_id = get_youtube_video_id(url_video_paper);
+                $(".actualyoutube iframe").remove();
+                $('<iframe width="100%" height="90%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
+                    .attr("src", "https://www.youtube.com/embed/" + video_id)
+                    .appendTo(".actualyoutube");
+
+                
+                // for(var i=0; i < data.points.length; i++){
+                //     pts = 'x = '+data.points[i].x +'\ny = '+
+                //         data.points[i].y.toPrecision(4) + '\n\n';
+                //     // alert('Closest point clicked:\n\n'+pts);
+                // }
+                // var d3 = Plotly.d3;
+                // d3.select('g.draglayer').selectAll('rect').style('cursor', 'help')
+            });
+
+            var dragLayer = document.getElementsByClassName('nsewdrag')[0]
+
+            myPlot.on('plotly_hover', function(data){
+            dragLayer.style.cursor = 'pointer'
+            });
+
+            myPlot.on('plotly_unhover', function(data){
+            dragLayer.style.cursor = ''
+            });
+
+            myPlot.on('plotly_relayout', function(data){
+            console.log("relayout DATA " , data);
+            });
+            document.getElementById("ploter").on('plotly_hover', function(data){
+                dragLayer.style.cursor = 'pointer'
+            });
+        }
+
+
+        $.getJSON("data.json", function(json) {
+            console.log(json); // this will show the info it in firebug console
+            json_data = json;
+            
+            // var text_list = json.text_list.map(x=>{return x.toLowerCase()});
+            // var dataY = text_list.map(x=>{return 1*x.includes(key_word)});
+            
+
+            // var class_points = json_data.emb2d;
+            // var class_display_text_list = json_data.display_text_list;
+            // var x_pos = class_points.map(x=>{return x[0]});
+            // var y_pos = class_points.map(x=>{return x[1]});
+            reload_cluster_option();
+            update_cluster_option();
+            update_data_table();
+        });
+
+
+        function reload_search(key_words){
+            // var key_word = "github";
+            // var key_word = $("#key_word").val();
+		    key_words = key_words.toLowerCase();
+    		$('#cluster_selector').val(0);
+
+            var text_list = json_data.text_list.map(x=>{return x.toLowerCase()});
+            var dataY = text_list.map(x=>{
+                var accept_criteria = key_words.split(",").reduce((s,kw) =>{
+                    return s && x.includes(kw);
+                }, true);
+                return 1*accept_criteria;
+            });
+            
+            var traces = [];
+            // dataY.map((x,i) => {
+            //     if(x == 1){
+            //         console.log(i);
+            //     }
+            // });
+            for(var y=0; y < 2; ++y){
+                var class_points = json_data.emb2d.filter((x,i) => {
+                    return y == dataY[i];
+                });
+                var class_display_text_list = json_data.display_text_list.filter((x,i)=> {
+                    return y == dataY[i];
+                });
+                var class_file_path_list = json_data.file_path_list.filter((x,i)=> {
+                    return y == dataY[i];
+                });
+                var class_youtube_link = json_data.youtube_link.filter((x,i)=> {
+                    return y == dataY[i];
+                });
+                var class_description = json_data.description.filter((x,i)=> {
+                    return y == dataY[i];
+                });
+                
+                
+                var name;
+                if(y == 1){
+                    name = "Contém os termos";
+                }
+                if(y == 0){
+                    
+                    name = "Não contém os termos";
+                }
+                
+                var x_pos = class_points.map(x=>{return x[0]});
+                var y_pos = class_points.map(x=>{return x[1]});
+
+                var trace = {
+                    x: x_pos,
+                    y: y_pos,
+                    text: class_display_text_list,
+                    file_path: class_file_path_list,
+                    youtube_link: class_youtube_link,
+                    description: class_description,
+                    mode: 'markers',
+                    type: 'scatter',
+                    name: name,
+                    hoverinfo: "text",
+                    marker: { size: 9 }
+                };
+                
+                traces.push(trace);
+            }
+            
+            
+            var config = {
+                showEditInChartStudio: true,
+                plotlyServerURL: "https://chart-studio.plotly.com",
+                showLink: true,
+                linkText: 'Abrir dados no Chart-Studio'
+            };
+            var layout = {
+                'hovermode': 'closest',
+                "ticks":"",
+                "xaxis": {showgrid: false, 'zeroline': false, 'visible': false},
+                "yaxis": {showgrid: false, 'zeroline': false, 'visible': false},
+            }
+            Plotly.newPlot('ploter', traces, layout, config);
+            set_plotly_handlers();
+        }
+
+
+
+        // DataTable
+
+        
+
+        function onClickLinkDataTable(e){
+            var paper_id = $(e).attr("value");
+            
+            var title_text = json_data.display_text_list[paper_id];
+            var file_path = json_data.file_path_list[paper_id];
+            var description = json_data.description[paper_id];
+            // var url_video_paper = "https://www.youtube.com/watch?v=ZLvi6EZ5ElI&";
+            var url_video_paper = json_data.youtube_link[paper_id];
+
+            $("#modal_title").html(title_text.replaceAll("<br>",""));
+            // $("#embed_pdf").attr("src", file_path);
+            $("#embed_pdf").html(description);
+            $("#exampleModal").modal();
+
+            var video_id = get_youtube_video_id(url_video_paper);
+            $(".actualyoutube iframe").remove();
+            $('<iframe width="100%" height="90%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
+                .attr("src", "https://www.youtube.com/embed/" + video_id)
+                .appendTo(".actualyoutube");
+        }
+
+        function update_data_table(){
+            // var dataSet = [
+            //     ["<a href='#' onClick=onClickLinkDataTable();>Teste</a>", "COD1", "Eixo1"],
+            // ];
+            var dataSetDataTable = [];
+            for(var i=0; i < json_data.display_text_list.length; i++){
+                var url_modal = "<a href='#' value="+i+" onClick=onClickLinkDataTable(this);>"+json_data.display_text_list[i]+"</a>"
+                dataSetDataTable.push([
+                    url_modal,
+                    json_data.cluster_options["channel_name"][i]
+                ])
+            }
+
+            $(document).ready(function() {
+                $('#example').DataTable( {
+                    data: dataSetDataTable,
+                    columns: [
+                        { title: "Nome do trabalho" },
+                        { title: "Canal" },
+                    ]
+                } );
+            } );
+        }
+        
+
+    </script>
+</html>
