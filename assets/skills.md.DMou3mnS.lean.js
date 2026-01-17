@@ -1,0 +1,1 @@
+import{_ as e,c as l,o as i,ae as t}from"./chunks/framework.CDjunVez.js";const p=JSON.parse('{"title":"Skills","description":"","frontmatter":{},"headers":[],"relativePath":"skills.md","filePath":"skills.md"}'),s={name:"skills.md"};function o(r,a,n,c,d,u){return i(),l("div",null,[...a[0]||(a[0]=[t("",13)])])}const m=e(s,[["render",o]]);export{p as __pageData,m as default};
