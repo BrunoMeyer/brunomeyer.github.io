@@ -1,0 +1,11 @@
+.history/
+
+node_modules/
+.DS_Store
+dist/
+.vitepress/cache/
+.vitepress/dist/
+.venv/
+
+# Local CV extraction artifacts
+.cv_extracted.txt
