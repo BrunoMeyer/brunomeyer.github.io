@@ -9,3 +9,5 @@ dist/
 
 # Local CV extraction artifacts
 .cv_extracted.txt
+
+docs/.vitepress/cache/

@@ -1,0 +1,136 @@
+/* Home-only polish */
+
+.VPHome {
+  position: relative;
+}
+
+/* Make the hero a positioning context for the spotlight */
+.VPHomeHero.bm-home-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.VPHomeHero.bm-home-hero .bm-spotlight {
+  position: absolute;
+  inset: -30% -30% auto -30%;
+  height: 420px;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(closest-side, rgba(99, 102, 241, 0.28), rgba(99, 102, 241, 0) 70%),
+    radial-gradient(closest-side, rgba(56, 189, 248, 0.20), rgba(56, 189, 248, 0) 72%);
+  filter: blur(12px);
+  mix-blend-mode: screen;
+}
+
+/* Signature underline on the hero name */
+.VPHomeHero.bm-home-hero .name {
+  position: relative;
+  display: inline-block;
+}
+
+.VPHomeHero.bm-home-hero .bm-underline {
+  position: absolute;
+  left: -0.06em;
+  right: -0.06em;
+  bottom: -0.22em;
+  height: 0.22em;
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0.9;
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.0), rgba(99, 102, 241, 0.55), rgba(56, 189, 248, 0.40), rgba(16, 185, 129, 0.0));
+  border-radius: 999px;
+}
+
+/* Subtle animated gradient behind hero */
+.VPHome::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(800px 400px at 20% 10%, rgba(99, 102, 241, 0.18), transparent 60%),
+    radial-gradient(700px 380px at 80% 0%, rgba(16, 185, 129, 0.12), transparent 55%),
+    radial-gradient(900px 520px at 50% 30%, rgba(56, 189, 248, 0.10), transparent 62%);
+  filter: blur(0px);
+  opacity: 0.9;
+  animation: bm-float 10s ease-in-out infinite;
+}
+
+@keyframes bm-float {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Icon treatment for buttons */
+.bm-btn-icon {
+  display: inline-flex;
+  width: 1.05em;
+  height: 1.05em;
+  margin-right: 0.55em;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+  transform: translateY(0.5px);
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.bm-btn-icon svg {
+  width: 1.05em;
+  height: 1.05em;
+}
+
+/* Navbar icons */
+.bm-nav-icon {
+  display: inline-flex;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.45em;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.9;
+  transform: translateY(0.5px);
+}
+
+.bm-nav-icon svg {
+  width: 1em;
+  height: 1em;
+}
+
+a.VPButton:hover .bm-btn-icon,
+.VPHomeHero .actions a:hover .bm-btn-icon {
+  transform: translateY(0.5px) translateX(1px);
+  opacity: 1;
+}
+
+/* Feature cards: small hover lift */
+.VPFeatures .item {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.VPFeatures .item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .VPHome::before {
+    animation: none;
+  }
+
+  .VPHomeHero.bm-home-hero .bm-spotlight {
+    display: none;
+  }
+
+  .VPFeatures .item,
+  .bm-btn-icon {
+    transition: none;
+  }
+}
