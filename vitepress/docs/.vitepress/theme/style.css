@@ -1,5 +1,46 @@
 /* Home-only polish */
 
+/* Brand palette
+  - #7C00FE (purple)
+  - #FFF1F1 (light gray)
+  - #F9E400 (yellow)
+  - #FFAF00 (orange)
+  - #F5004F (red)
+*/
+
+:root {
+  /* VitePress brand tokens */
+  --vp-c-brand-1: #7C00FE;
+  --vp-c-brand-2: #F5004F;
+  --vp-c-brand-3: #FFAF00;
+  --vp-c-brand-soft: rgba(124, 0, 254, 0.14);
+
+  /* Base surfaces */
+  --vp-c-bg: #FFF1F1;
+  --vp-c-bg-alt: #FFF1F1;
+  --vp-c-bg-soft: rgba(255, 241, 241, 0.72);
+  --vp-c-bg-mute: rgba(255, 241, 241, 0.48);
+
+  /* Buttons & links (keep consistent across components) */
+  --vp-button-brand-bg: var(--vp-c-brand-1);
+  --vp-button-brand-hover-bg: #F5004F;
+  --vp-button-brand-active-bg: #FFAF00;
+  --vp-button-brand-border: transparent;
+}
+
+.dark {
+  --vp-c-brand-1: #7C00FE;
+  --vp-c-brand-2: #FFAF00;
+  --vp-c-brand-3: #F9E400;
+  --vp-c-brand-soft: rgba(124, 0, 254, 0.18);
+
+  /* Dark surfaces stay dark; palette used for accents */
+  --vp-c-bg: #0f0b14;
+  --vp-c-bg-alt: #0f0b14;
+  --vp-c-bg-soft: rgba(15, 11, 20, 0.72);
+  --vp-c-bg-mute: rgba(15, 11, 20, 0.5);
+}
+
 .VPHome {
   position: relative;
 }
@@ -17,8 +58,8 @@
   pointer-events: none;
   opacity: 0;
   background:
-    radial-gradient(closest-side, rgba(99, 102, 241, 0.28), rgba(99, 102, 241, 0) 70%),
-    radial-gradient(closest-side, rgba(56, 189, 248, 0.20), rgba(56, 189, 248, 0) 72%);
+    radial-gradient(closest-side, rgba(124, 0, 254, 0.30), rgba(124, 0, 254, 0) 70%),
+    radial-gradient(closest-side, rgba(245, 0, 79, 0.22), rgba(245, 0, 79, 0) 72%);
   filter: blur(12px);
   mix-blend-mode: screen;
 }
@@ -38,7 +79,13 @@
   transform: scaleX(0);
   transform-origin: left;
   opacity: 0.9;
-  background: linear-gradient(90deg, rgba(99, 102, 241, 0.0), rgba(99, 102, 241, 0.55), rgba(56, 189, 248, 0.40), rgba(16, 185, 129, 0.0));
+  background: linear-gradient(
+    90deg,
+    rgba(124, 0, 254, 0.0),
+    rgba(124, 0, 254, 0.58),
+    rgba(255, 175, 0, 0.48),
+    rgba(249, 228, 0, 0.0)
+  );
   border-radius: 999px;
 }
 
@@ -49,9 +96,9 @@
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(800px 400px at 20% 10%, rgba(99, 102, 241, 0.18), transparent 60%),
-    radial-gradient(700px 380px at 80% 0%, rgba(16, 185, 129, 0.12), transparent 55%),
-    radial-gradient(900px 520px at 50% 30%, rgba(56, 189, 248, 0.10), transparent 62%);
+    radial-gradient(800px 400px at 20% 10%, rgba(124, 0, 254, 0.18), transparent 60%),
+    radial-gradient(700px 380px at 80% 0%, rgba(255, 175, 0, 0.14), transparent 55%),
+    radial-gradient(900px 520px at 50% 30%, rgba(245, 0, 79, 0.10), transparent 62%);
   filter: blur(0px);
   opacity: 0.9;
   animation: bm-float 10s ease-in-out infinite;
