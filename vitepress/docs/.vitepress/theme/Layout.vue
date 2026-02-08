@@ -1,11 +1,17 @@
 <template>
-  <DefaultTheme.Layout />
+  <DefaultTheme.Layout>
+    <template #home-hero-image>
+      <HeroTechOrbitD3 />
+    </template>
+  </DefaultTheme.Layout>
 </template>
 
 <script setup lang="ts">
 import DefaultTheme from 'vitepress/theme'
 import { nextTick, onMounted, watch } from 'vue'
 import { useData, useRoute } from 'vitepress'
+
+import HeroTechOrbitD3 from './components/HeroTechOrbitD3.vue'
 
 const { frontmatter } = useData()
 const route = useRoute()

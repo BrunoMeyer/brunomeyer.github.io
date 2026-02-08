@@ -181,3 +181,346 @@ a.VPButton:hover .bm-btn-icon,
     transition: none;
   }
 }
+
+/* Home hero right-side tech orbit */
+.VPHomeHero .image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tighten spacing between hero and features */
+.VPHome .VPHomeHero {
+  padding-bottom: clamp(24px, 3vw, 44px);
+}
+
+.bm-tech-orbit {
+  width: 44vw;
+  height: 80vh;
+  margin-top: 0;
+  margin-left: 0;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  position: relative;
+  margin-inline: auto;
+  color: rgba(255, 255, 255, 0.92);
+  margin-bottom: 0;
+}
+
+.bm-tech-orbit__frame {
+  width: 100%;
+  height: 100%;
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 380px at 25% 10%, rgba(124, 0, 254, 0.55), rgba(124, 0, 254, 0) 56%),
+    radial-gradient(650px 420px at 90% 15%, rgba(255, 175, 0, 0.35), rgba(255, 175, 0, 0) 54%),
+    radial-gradient(800px 520px at 50% 82%, rgba(245, 0, 79, 0.28), rgba(245, 0, 79, 0) 62%),
+    linear-gradient(135deg, rgba(15, 11, 20, 0.86), rgba(18, 13, 26, 0.78));
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.24),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.10);
+}
+
+/* Sigma renderer container (canvas is injected here) */
+.bm-tech-orbit__sigma {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 28px;
+  overflow: hidden;
+  pointer-events: auto;
+  transform-origin: 50% 50%;
+  transition: transform 220ms ease, filter 220ms ease;
+  will-change: transform;
+}
+
+.bm-tech-orbit--active .bm-tech-orbit__sigma {
+  transform: scale(1.05);
+  filter: saturate(1.02) brightness(1.03);
+}
+
+/* .bm-tech-orbit--active .bm-tech-orbit {
+  width: 100vw;
+  height: 100vw;
+} */
+
+.bm-tech-orbit__ring,
+.bm-tech-orbit__core,
+.bm-tech-orbit__scan {
+  z-index: 3;
+  pointer-events: none;
+}
+
+.bm-tech-orbit__glow {
+  position: absolute;
+  inset: -60%;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 55%);
+  filter: blur(14px);
+  opacity: 0.7;
+  transform: translate3d(0, 0, 0);
+  animation: bm-orbit-glow 8.5s ease-in-out infinite;
+}
+
+@keyframes bm-orbit-glow {
+  0% {
+    transform: translate3d(-8px, 6px, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(10px, -8px, 0) scale(1.03);
+  }
+  100% {
+    transform: translate3d(-8px, 6px, 0) scale(1);
+  }
+}
+
+.bm-tech-orbit__ring {
+  position: absolute;
+  inset: 13.5%;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.bm-tech-orbit__ring--inner {
+  inset: 28%;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.bm-tech-orbit__ring--outer {
+  animation: bm-orbit-spin 16s linear infinite;
+}
+
+.bm-tech-orbit__ring--inner {
+  animation: bm-orbit-spin-rev 19s linear infinite;
+}
+
+@keyframes bm-orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bm-orbit-spin-rev {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.bm-tech-orbit__core {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 3;
+}
+
+.bm-tech-orbit__coreIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 14px 32px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.92);
+  margin-bottom: 10px;
+}
+
+.bm-tech-orbit__coreIcon svg {
+  width: 34px;
+  height: 34px;
+}
+
+.bm-tech-orbit__coreText {
+  text-align: center;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+}
+
+.bm-tech-orbit__coreText--sigma {
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(10, 8, 14, 0.38);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(8px);
+}
+
+.bm-tech-orbit__coreTitle {
+  font-weight: 700;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.bm-tech-orbit__coreSubtitle {
+  margin-top: 4px;
+  font-weight: 600;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.bm-tech-orbit__node {
+  --bm-orbit-radius: clamp(120px, 15vw, 165px);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 128px;
+  z-index: 4;
+  transform:
+    translate(-50%, -50%)
+    rotate(calc(var(--bm-orbit-angle) + var(--bm-orbit-rot, 0deg)))
+    translateX(var(--bm-orbit-radius))
+    rotate(calc(-1 * (var(--bm-orbit-angle) + var(--bm-orbit-rot, 0deg))));
+}
+
+.bm-tech-orbit__nodeInner {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  animation: bm-orbit-float 3.2s ease-in-out infinite;
+}
+
+@keyframes bm-orbit-float {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -6px, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.bm-tech-orbit__nodeIcon {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.24),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.bm-tech-orbit__nodeIcon svg {
+  width: 34px;
+  height: 34px;
+}
+
+.bm-tech-orbit__nodeLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+}
+
+/* Place nodes around the core (true circular disposition) */
+.bm-tech-orbit__node--cloud {
+  --bm-orbit-angle: -90deg;
+}
+
+.bm-tech-orbit__node--fullstack {
+  --bm-orbit-angle: 30deg;
+}
+
+.bm-tech-orbit__node--ai {
+  --bm-orbit-angle: 150deg;
+}
+
+.bm-tech-orbit__node--cloud .bm-tech-orbit__nodeInner {
+  animation-delay: 0s;
+}
+
+.bm-tech-orbit__node--fullstack .bm-tech-orbit__nodeInner {
+  animation-delay: 0.35s;
+}
+
+.bm-tech-orbit__node--ai .bm-tech-orbit__nodeInner {
+  animation-delay: 0.7s;
+}
+
+.bm-tech-orbit__scan {
+  position: absolute;
+  inset: -20% -20% auto -20%;
+  height: 56%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.14) 50%, rgba(255, 255, 255, 0) 100%);
+  opacity: 0.18;
+  transform: rotate(-12deg) translate3d(0, -40%, 0);
+  animation: bm-orbit-scan 5.6s ease-in-out infinite;
+}
+
+@keyframes bm-orbit-scan {
+  0% {
+    transform: rotate(-12deg) translate3d(0, -40%, 0);
+  }
+  50% {
+    transform: rotate(-12deg) translate3d(0, 35%, 0);
+  }
+  100% {
+    transform: rotate(-12deg) translate3d(0, -40%, 0);
+  }
+}
+
+.bm-tech-orbit__caption {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--vp-c-text-2);
+  opacity: 0.85;
+  margin-top: 12px;
+}
+
+.bm-tech-orbit__dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--vp-c-text-3);
+  opacity: 0.6;
+}
+
+@media (max-width: 960px) {
+  .bm-tech-orbit {
+    width: min(360px, 72vw);
+  }
+
+  .bm-tech-orbit__node {
+    --bm-orbit-radius: clamp(108px, 19vw, 150px);
+  }
+}
+
+@media (max-width: 720px) {
+  .bm-tech-orbit {
+    width: min(320px, 86vw);
+  }
+
+  .bm-tech-orbit__node {
+    --bm-orbit-radius: clamp(98px, 22vw, 132px);
+  }
+
+  .bm-tech-orbit__caption {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bm-tech-orbit__glow,
+  .bm-tech-orbit__ring--outer,
+  .bm-tech-orbit__ring--inner,
+  .bm-tech-orbit__nodeInner,
+  .bm-tech-orbit__scan {
+    animation: none;
+  }
+}
