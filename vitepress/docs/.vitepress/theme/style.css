@@ -187,6 +187,20 @@ a.VPButton:hover .bm-btn-icon,
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: visible;
+  position: relative;
+  z-index: 2;
+}
+
+/* Keep hero text behind the hero image area (helps hover interactions). */
+.VPHomeHero .main {
+  position: relative;
+  z-index: 1;
+}
+
+/* When the orbit is expanded, don't let hero text intercept pointer events. */
+html.bm-tech-orbit-expanded .VPHomeHero .main {
+  pointer-events: none;
 }
 
 /* Tighten spacing between hero and features */
@@ -202,10 +216,23 @@ a.VPButton:hover .bm-btn-icon,
   aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
-  position: relative;
   margin-inline: auto;
   color: rgba(255, 255, 255, 0.92);
   margin-bottom: 0;
+  transition: width 240ms ease, height 240ms ease, transform 240ms ease;
+}
+
+/* Expand the orbit to full viewport width when hovering the D3 surface. */
+.bm-tech-orbit--expanded {
+  position: relative;
+  width: 90vw;
+  margin-left: -65vw;
+  max-width: 100vw;
+  height: min(80vh, 900px);
+  aspect-ratio: auto;
+  margin-right: calc(50% - 50vw);
+  z-index: 9999;
+  isolation: isolate;
 }
 
 .bm-tech-orbit__frame {
@@ -218,7 +245,7 @@ a.VPButton:hover .bm-btn-icon,
     radial-gradient(900px 380px at 25% 10%, rgba(124, 0, 254, 0.55), rgba(124, 0, 254, 0) 56%),
     radial-gradient(650px 420px at 90% 15%, rgba(255, 175, 0, 0.35), rgba(255, 175, 0, 0) 54%),
     radial-gradient(800px 520px at 50% 82%, rgba(245, 0, 79, 0.28), rgba(245, 0, 79, 0) 62%),
-    linear-gradient(135deg, rgba(15, 11, 20, 0.86), rgba(18, 13, 26, 0.78));
+    linear-gradient(135deg, rgba(15, 11, 20, 0.975), rgba(18, 13, 26, 1.0));
   box-shadow:
     0 28px 70px rgba(0, 0, 0, 0.24),
     inset 0 0 0 1px rgba(255, 255, 255, 0.10);

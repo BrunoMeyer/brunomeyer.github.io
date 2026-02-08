@@ -1,7 +1,7 @@
 <template>
   <div
     class="bm-tech-orbit"
-    :class="{ 'bm-tech-orbit--active': isActive }"
+    :class="{ 'bm-tech-orbit--active': isActive, 'bm-tech-orbit--expanded': isExpanded }"
     aria-label="Technology focus animation"
     role="img"
   >
@@ -11,7 +11,13 @@
       <div class="bm-tech-orbit__ring bm-tech-orbit__ring--inner" />
 
       <!-- D3 renders SVG into this container -->
-      <div ref="d3Container" class="bm-tech-orbit__sigma" aria-hidden="true" />
+      <div
+        ref="d3Container"
+        class="bm-tech-orbit__sigma"
+        aria-hidden="true"
+        @pointerenter="handlePointerEnter"
+        @pointerleave="handlePointerLeave"
+      />
 
       <!-- Text badge stays HTML; icons are rendered by D3 nodes -->
       <!-- <div class="bm-tech-orbit__core" aria-hidden="true">
@@ -27,10 +33,28 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+
 
 type BaseNodeKey = 'core' | 'cloud' | 'fullstack' | 'ai'
-type UnlockedNodeKey = 'vue' | 'react' | 'django' | 'django2' | 'django3'
+
+const UNLOCKED_KEYS = [
+  'vue',
+  'react',
+  'django',
+  'rails',
+  'flaskFastapi',
+  'angular',
+  'cypress',
+  'playwright',
+  'node',
+  'aspnet',
+  'nginx',
+  'apache',
+  'firebase'
+] as const
+
+type UnlockedNodeKey = (typeof UNLOCKED_KEYS)[number]
 type NodeKey = BaseNodeKey | UnlockedNodeKey
 type OuterBaseKey = Exclude<BaseNodeKey, 'core'>
 
@@ -52,6 +76,37 @@ type OrbitNode = {
 
 const d3Container = ref<HTMLDivElement | null>(null)
 const isActive = ref(false)
+const isExpanded = ref(false)
+
+let collapseTimer: number | null = null
+
+function clearCollapseTimer() {
+  if (collapseTimer !== null) window.clearTimeout(collapseTimer)
+  collapseTimer = null
+}
+
+function handlePointerEnter() {
+  clearCollapseTimer()
+  isExpanded.value = true
+}
+
+function handlePointerLeave() {
+  clearCollapseTimer()
+  collapseTimer = window.setTimeout(() => {
+    isExpanded.value = false
+  }, 80)
+}
+
+// While expanded, add a global class so CSS can ensure the orbit stays on top
+// and the hero text doesn't steal pointer events.
+watch(
+  isExpanded,
+  (value) => {
+    if (typeof document === 'undefined') return
+    document.documentElement.classList.toggle('bm-tech-orbit-expanded', value)
+  },
+  { immediate: true }
+)
 
 let destroy: (() => void) | undefined
 
@@ -118,6 +173,11 @@ onMounted(async () => {
 
   const g = svg.append('g')
 
+  // Simple camera pan applied to the root group. Used to re-center a selected node
+  // while the animation is frozen, so unlocked nodes don't escape the view.
+  let panX = 0
+  let panY = 0
+
   const iconSources = {
     core: svgToDataUrl(CORE_SVG),
     cloud: svgToDataUrl(CLOUD_SVG),
@@ -125,14 +185,16 @@ onMounted(async () => {
     ai: svgToDataUrl(AI_SVG)
   }
 
+  const simpleIcon = (slug: string) => `https://cdn.simpleicons.org/${slug}/ffffff`
+
   const fullstackUnlocked: OrbitNode[] = [
     {
       key: 'vue',
       label: 'Vue.js',
       iconHref: 'https://img.icons8.com/?size=100&id=rY6agKizO9eb&format=png&color=000000',
       iconCssFilter: 'invert(0) brightness(1.05)',
-      box: 44,
-      iconSize: 26,
+      box: 40,
+      iconSize: 24,
       radius: 14,
       bgFill: 'rgba(255,255,255,0.035)',
       bgStroke: 'rgba(255,255,255,0.10)',
@@ -146,8 +208,8 @@ onMounted(async () => {
       label: 'React',
       iconHref: 'https://img.icons8.com/?size=100&id=Vra58PN2KmI5&format=png&color=000000',
       iconCssFilter: 'invert(0) brightness(1.05)',
-      box: 44,
-      iconSize: 26,
+      box: 40,
+      iconSize: 24,
       radius: 14,
       bgFill: 'rgba(255,255,255,0.035)',
       bgStroke: 'rgba(255,255,255,0.10)',
@@ -161,8 +223,8 @@ onMounted(async () => {
       label: 'Django',
       iconHref: 'https://img.icons8.com/?size=100&id=FnTmHRua3mU3&format=png&color=000000',
       iconCssFilter: 'invert(0) brightness(1.05)',
-      box: 44,
-      iconSize: 26,
+      box: 40,
+      iconSize: 24,
       radius: 14,
       bgFill: 'rgba(255,255,255,0.035)',
       bgStroke: 'rgba(255,255,255,0.10)',
@@ -171,37 +233,146 @@ onMounted(async () => {
       y: 0,
       scale: 1
     },
-    // {
-    //   key: 'django2',
-    //   label: 'Django2',
-    //   iconHref: 'https://img.icons8.com/?size=100&id=FnTmHRua3mU3&format=png&color=000000',
-    //   iconCssFilter: 'invert(1) brightness(1.05)',
-    //   box: 44,
-    //   iconSize: 26,
-    //   radius: 14,
-    //   bgFill: 'rgba(255,255,255,0.035)',
-    //   bgStroke: 'rgba(255,255,255,0.10)',
-    //   bgStrokeWidth: 1,
-    //   x: 0,
-    //   y: 0,
-    //   scale: 1
-    // },
-
-    // {
-    //   key: 'django3',
-    //   label: 'Django3',
-    //   iconHref: 'https://img.icons8.com/?size=100&id=FnTmHRua3mU3&format=png&color=000000',
-    //   iconCssFilter: 'invert(1) brightness(1.05)',
-    //   box: 44,
-    //   iconSize: 26,
-    //   radius: 14,
-    //   bgFill: 'rgba(255,255,255,0.035)',
-    //   bgStroke: 'rgba(255,255,255,0.10)',
-    //   bgStrokeWidth: 1,
-    //   x: 0,
-    //   y: 0,
-    //   scale: 1
-    // },
+    {
+      key: 'rails',
+      label: 'Ruby on Rails',
+      iconHref: simpleIcon('rubyonrails'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'flaskFastapi',
+      label: 'Flask / FastAPI',
+      iconHref: simpleIcon('fastapi'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'angular',
+      label: 'Angular',
+      iconHref: simpleIcon('angular'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'cypress',
+      label: 'Cypress',
+      iconHref: simpleIcon('cypress'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'playwright',
+      label: 'Playwright',
+      iconHref: simpleIcon('playwright'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'node',
+      label: 'Node.js',
+      iconHref: simpleIcon('nodedotjs'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'aspnet',
+      label: 'ASP.NET',
+      iconHref: simpleIcon('dotnet'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'nginx',
+      label: 'NGINX',
+      iconHref: simpleIcon('nginx'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'apache',
+      label: 'Apache',
+      iconHref: simpleIcon('apache'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'firebase',
+      label: 'Firebase',
+      iconHref: simpleIcon('firebase'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
   ]
 
   const nodes: OrbitNode[] = [
@@ -346,6 +517,7 @@ onMounted(async () => {
   const labelSel = nodeSel.selectAll<SVGTextElement, OrbitNode>('text')
 
   let hoveredKey: OuterBaseKey | null = null
+  let selectedKey: NodeKey | null = null
   let hoverInsideUnlockedCluster = false
   let closeClusterTimer: number | null = null
 
@@ -410,16 +582,42 @@ onMounted(async () => {
       .append('g')
       .attr('data-key', (d: any) => d.key)
       .style('opacity', 0)
-      .style('cursor', 'default')
+      .style('cursor', 'pointer')
       .style('pointer-events', 'all')
       .on('mouseenter', () => {
+        if (selectedKey !== null) return
         hoverInsideUnlockedCluster = true
         clearCloseTimer()
         isActive.value = true
       })
       .on('mouseleave', () => {
+        if (selectedKey !== null) return
         hoverInsideUnlockedCluster = false
         scheduleCloseUnlockedCluster()
+      })
+      .on('click', (_event, d) => {
+        if (selectedKey === d.key) {
+          selectedKey = null
+          resetPan()
+          hoverInsideUnlockedCluster = false
+          hoveredKey = null
+          isActive.value = false
+          syncUnlockedData()
+          applyHoverStyles()
+          startAnimation()
+          renderFrame(animT)
+          return
+        }
+
+        selectedKey = d.key
+        hoveredKey = 'fullstack'
+        hoverInsideUnlockedCluster = true
+        isActive.value = true
+        stopAnimation()
+        syncUnlockedData()
+        applyHoverStyles()
+        centerOnKey(d.key)
+        renderFrame(animT)
       })
 
     extraEnter
@@ -463,27 +661,34 @@ onMounted(async () => {
 
     // Keep map in sync for positioning lookups
     ;(fullstackUnlocked as OrbitNode[]).forEach((n) => nodesByKey.set(n.key, n))
-    ;(['vue', 'react', 'django', 'django2', 'django3'] as const).forEach((k) => {
+    UNLOCKED_KEYS.forEach((k) => {
       if (!shouldShow) nodesByKey.delete(k)
     })
   }
 
   function scheduleCloseUnlockedCluster() {
     if (hoveredKey !== 'fullstack') return
+    if (selectedKey !== null) return
     clearCloseTimer()
     closeClusterTimer = window.setTimeout(() => {
       if (hoveredKey !== 'fullstack') return
       if (hoverInsideUnlockedCluster) return
+      if (selectedKey !== null) return
+      resetPan()
       hoveredKey = null
       isActive.value = false
       syncUnlockedData()
       applyHoverStyles()
       startAnimation()
+      renderFrame(animT)
     }, 140)
   }
 
   function applyHoverStyles() {
     const hasHover = hoveredKey !== null
+    const selected = selectedKey
+    const strokeSelected = 'rgba(85, 170, 255, 0.95)'
+    const fillSelected = 'rgba(85, 170, 255, 0.08)'
 
     nodeSel
       .attr('opacity', (d) => {
@@ -496,9 +701,18 @@ onMounted(async () => {
       )
 
     rectSel
-      .attr('fill', (d) => (d.key === hoveredKey ? 'rgba(255,255,255,0.08)' : d.bgFill))
-      .attr('stroke', (d) => (d.key === hoveredKey ? 'rgba(255,255,255,0.32)' : d.bgStroke))
-      .attr('stroke-width', (d) => (d.key === hoveredKey ? Math.max(1.4, d.bgStrokeWidth) : d.bgStrokeWidth))
+      .attr('fill', (d) => {
+        if (selected && d.key === selected) return fillSelected
+        return d.key === hoveredKey ? 'rgba(255,255,255,0.08)' : d.bgFill
+      })
+      .attr('stroke', (d) => {
+        if (selected && d.key === selected) return strokeSelected
+        return d.key === hoveredKey ? 'rgba(255,255,255,0.32)' : d.bgStroke
+      })
+      .attr('stroke-width', (d) => {
+        if (selected && d.key === selected) return Math.max(2.2, d.bgStrokeWidth)
+        return d.key === hoveredKey ? Math.max(1.4, d.bgStrokeWidth) : d.bgStrokeWidth
+      })
 
     labelSel.attr('fill', (d) => (d.key === hoveredKey ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.78)'))
 
@@ -517,6 +731,18 @@ onMounted(async () => {
     extraLinkSel
       .attr('stroke', () => (hoveredKey === 'fullstack' ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.06)'))
       .attr('stroke-width', () => (hoveredKey === 'fullstack' ? 1.15 : 1))
+
+    // Selected styling for unlocked nodes.
+    extraNodeSel
+      .style('filter', (d) =>
+        selected && d.key === selected ? 'drop-shadow(0 0 16px rgba(85, 170, 255, 0.25))' : 'none'
+      )
+
+    extraNodeSel
+      .select<SVGRectElement>('rect')
+      .attr('fill', (d) => (selected && d.key === selected ? fillSelected : d.bgFill))
+      .attr('stroke', (d) => (selected && d.key === selected ? strokeSelected : d.bgStroke))
+      .attr('stroke-width', (d) => (selected && d.key === selected ? Math.max(2.0, d.bgStrokeWidth) : d.bgStrokeWidth))
   }
 
   let raf = 0
@@ -537,6 +763,21 @@ onMounted(async () => {
     return { width, height }
   }
 
+  function resetPan() {
+    panX = 0
+    panY = 0
+  }
+
+  function centerOnKey(key: NodeKey) {
+    const target = nodesByKey.get(key)
+    if (!target) return
+    const { width, height } = getSize()
+    const cx = width / 2
+    const cy = height / 2
+    panX = cx - target.x
+    panY = cy - target.y
+  }
+
   function renderFrame(t: number) {
     const { width, height } = getSize()
     const cx = width / 2
@@ -551,6 +792,11 @@ onMounted(async () => {
     const breathing = 1 + Math.sin(t * 1.25) * 0.03
     const r = orbitRadius * breathing
 
+    // Make the orbit slightly elliptical: smaller vertical range than horizontal.
+    // Tuned to keep the overall “reach” similar while compressing Y.
+    const orbitRx = r * 1.05
+    const orbitRy = r * 0.72
+
     // Core stays centered
     const core = nodesByKey.get('core')
     if (core) {
@@ -563,8 +809,8 @@ onMounted(async () => {
       const node = nodesByKey.get(key)
       if (!node) return
       const a = baseAngles[key] + rot
-      node.x = cx + Math.cos(a) * r
-      node.y = cy + Math.sin(a) * r
+      node.x = cx + Math.cos(a) * orbitRx
+      node.y = cy + Math.sin(a) * orbitRy
       node.scale = hoveredKey === key ? 1.07 : 1
     })
 
@@ -573,12 +819,39 @@ onMounted(async () => {
       const fs = nodesByKey.get('fullstack')
       if (fs) {
         const outAngle = Math.atan2(fs.y - cy, fs.x - cx)
-        const spread = 0.78
-        const dist = Math.min(width, height) * 0.165
-        const angles = [outAngle - spread, outAngle, outAngle + spread]
+        const baseDist = Math.min(width, height) * 0.165
+        const ringSize = 6
+
+        // Enforce a minimum center-to-center distance to avoid overlaps.
+        const maxBox = activeUnlockedNodes.reduce((m, n) => Math.max(m, n.box), 0)
+        const gap = 32
+        const minCenterDist = Math.max(44, maxBox + gap)
+
+        let prevRingRadius = 0
 
         activeUnlockedNodes.forEach((n, i) => {
-          const a = angles[i] ?? outAngle
+          const ring = Math.floor(i / ringSize)
+          const idx = i % ringSize
+          const countInRing = Math.min(ringSize, activeUnlockedNodes.length - ring * ringSize)
+
+          // Wider arc for denser rings; slightly narrower for outer rings.
+          const baseArc = ring === 0 ? 2.05 : 1.55
+          const arcSpan = baseArc + Math.max(0, countInRing - 4) * 0.18
+
+          const step = countInRing > 1 ? arcSpan / (countInRing - 1) : 0
+          const a = outAngle - arcSpan / 2 + step * idx
+
+          // Compute a radius that guarantees horizontal spacing (chord length) >= minCenterDist.
+          const sinHalf = Math.sin(step / 2)
+          const chordRadiusReq = sinHalf > 0.001 ? minCenterDist / (2 * sinHalf) : baseDist
+
+          let dist = baseDist * (1 + ring * 0.75)
+          dist = Math.max(dist, chordRadiusReq)
+
+          // Keep rings separated radially.
+          if (ring > 0) dist = Math.max(dist, prevRingRadius + minCenterDist * 0.92)
+          if (idx === countInRing - 1) prevRingRadius = dist
+
           n.x = fs.x + Math.cos(a) * dist
           n.y = fs.y + Math.sin(a) * dist
           n.scale = 1
@@ -593,6 +866,9 @@ onMounted(async () => {
         extraNodeSel.attr('transform', (d) => `translate(${d.x},${d.y}) scale(${d.scale})`)
       }
     }
+
+    // Apply camera pan after positions are computed.
+    g.attr('transform', `translate(${panX},${panY})`)
 
     linkSel
       .attr('x1', (d) => nodesByKey.get(d.from)!.x)
@@ -635,6 +911,7 @@ onMounted(async () => {
   nodeSel
     .filter((d) => d.key !== 'core')
     .on('mouseenter', (_event, d) => {
+      if (selectedKey !== null) return
       clearCloseTimer()
       hoveredKey = d.key as OuterBaseKey
       isActive.value = true
@@ -644,16 +921,45 @@ onMounted(async () => {
       applyHoverStyles()
     })
     .on('mouseleave', (_event, d) => {
+      if (selectedKey !== null) return
       if ((d.key as OuterBaseKey) === 'fullstack') {
         hoverInsideUnlockedCluster = false
         scheduleCloseUnlockedCluster()
         return
       }
+      resetPan()
       hoveredKey = null
       isActive.value = false
       syncUnlockedData()
       applyHoverStyles()
       startAnimation()
+      renderFrame(animT)
+    })
+    .on('click', (_event, d) => {
+      const key = d.key as NodeKey
+
+      // Clicking toggles a persistent selection lock.
+      if (selectedKey === key) {
+        selectedKey = null
+        resetPan()
+        hoverInsideUnlockedCluster = false
+        hoveredKey = null
+        isActive.value = false
+        syncUnlockedData()
+        applyHoverStyles()
+        startAnimation()
+        renderFrame(animT)
+        return
+      }
+
+      selectedKey = key
+      if (key === 'cloud' || key === 'fullstack' || key === 'ai') hoveredKey = key
+      isActive.value = true
+      stopAnimation()
+      syncUnlockedData()
+      applyHoverStyles()
+      centerOnKey(key)
+      renderFrame(animT)
     })
 
   const ro = new ResizeObserver(() => {
@@ -674,5 +980,10 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   destroy?.()
   isActive.value = false
+  isExpanded.value = false
+  clearCollapseTimer()
+  if (typeof document !== 'undefined') {
+    document.documentElement.classList.remove('bm-tech-orbit-expanded')
+  }
 })
 </script>
