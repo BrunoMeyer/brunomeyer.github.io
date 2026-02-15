@@ -216,10 +216,17 @@ html.bm-tech-orbit-expanded .VPHomeHero .main {
   aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
-  margin-inline: auto;
+  position: relative;
+  /* Use numeric margins so expand/collapse can animate smoothly. */
+  margin-inline: 0;
   color: rgba(255, 255, 255, 0.92);
   margin-bottom: 0;
-  transition: width 240ms ease, height 240ms ease, transform 240ms ease;
+  transition:
+    width 240ms ease,
+    height 240ms ease,
+    transform 240ms ease,
+    margin-left 240ms ease,
+    margin-right 240ms ease;
 }
 
 /* Expand the orbit to full viewport width when hovering the D3 surface. */
@@ -259,9 +266,9 @@ html.bm-tech-orbit-expanded .VPHomeHero .main {
   border-radius: 28px;
   overflow: hidden;
   pointer-events: auto;
-  transform-origin: 50% 50%;
   transition: transform 220ms ease, filter 220ms ease;
   will-change: transform;
+  transform-origin: 50% 50%;
 }
 
 .bm-tech-orbit--active .bm-tech-orbit__sigma {

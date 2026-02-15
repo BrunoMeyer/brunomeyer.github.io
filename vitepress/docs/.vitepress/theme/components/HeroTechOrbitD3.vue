@@ -51,7 +51,17 @@ const UNLOCKED_KEYS = [
   'aspnet',
   'nginx',
   'apache',
-  'firebase'
+  'firebase',
+  'githubActions',
+  'gitlabPipelines',
+  'ansible',
+  'aws',
+  'gcp',
+  'linux',
+  'docker',
+  'kubernetes',
+  'terraform',
+  'flux'
 ] as const
 
 type UnlockedNodeKey = (typeof UNLOCKED_KEYS)[number]
@@ -185,7 +195,11 @@ onMounted(async () => {
     ai: svgToDataUrl(AI_SVG)
   }
 
-  const simpleIcon = (slug: string) => `https://cdn.simpleicons.org/${slug}/ffffff`
+  const simpleIcon = (slug: string) => {
+    if (slug == 'playwright') return 'https://icon.icepanel.io/Technology/svg/Playwrite.svg';
+    if (slug == 'amazonaws') return 'https://icon.icepanel.io/Technology/png-shadow-512/AWS.png';
+    return `https://cdn.simpleicons.org/${slug}/ffffff`;
+  }
 
   const fullstackUnlocked: OrbitNode[] = [
     {
@@ -375,6 +389,150 @@ onMounted(async () => {
     },
   ]
 
+  const gitOpsCloudUnlocked: OrbitNode[] = [
+    {
+      key: 'githubActions',
+      label: 'GitHub Actions',
+      iconHref: simpleIcon('githubactions'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'gitlabPipelines',
+      label: 'GitLab Pipelines',
+      iconHref: simpleIcon('gitlab'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'ansible',
+      label: 'Ansible',
+      iconHref: simpleIcon('ansible'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'aws',
+      label: 'AWS',
+      iconHref: simpleIcon('amazonaws'),
+      iconCssFilter: 'invert(1) brightness(1.05)',
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'gcp',
+      label: 'GCP',
+      iconHref: simpleIcon('googlecloud'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'linux',
+      label: 'Linux',
+      iconHref: simpleIcon('linux'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'docker',
+      label: 'Docker',
+      iconHref: simpleIcon('docker'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'kubernetes',
+      label: 'Kubernetes',
+      iconHref: simpleIcon('kubernetes'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'terraform',
+      label: 'Terraform',
+      iconHref: simpleIcon('terraform'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'flux',
+      label: 'Flux',
+      iconHref: simpleIcon('flux'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    }
+  ]
+
   const nodes: OrbitNode[] = [
     {
       key: 'core',
@@ -520,6 +678,7 @@ onMounted(async () => {
   let selectedKey: NodeKey | null = null
   let hoverInsideUnlockedCluster = false
   let closeClusterTimer: number | null = null
+  let unlockedParentKey: OuterBaseKey | null = null
 
   function clearCloseTimer() {
     if (closeClusterTimer) window.clearTimeout(closeClusterTimer)
@@ -527,16 +686,39 @@ onMounted(async () => {
   }
 
   function syncUnlockedData() {
-    const shouldShow = hoveredKey === 'fullstack'
-    activeUnlockedNodes = shouldShow ? fullstackUnlocked : []
+    const activeParent: OuterBaseKey | null = hoveredKey === 'cloud' || hoveredKey === 'fullstack' ? hoveredKey : null
+    const shouldShow = activeParent !== null
+    unlockedParentKey = activeParent
+    activeUnlockedNodes =
+      activeParent === 'fullstack' ? fullstackUnlocked : activeParent === 'cloud' ? gitOpsCloudUnlocked : []
     activeUnlockedEdges = shouldShow
       ? activeUnlockedNodes.map((n) => ({
-          from: 'fullstack',
+          from: activeParent as NodeKey,
           to: n.key,
           stroke: 'rgba(255,255,255,0.16)',
           strokeWidth: 1
         }))
       : []
+
+    // Seed unlocked nodes at the parent position so they never flash at (0,0).
+    if (shouldShow && unlockedParentKey) {
+      const parent = nodesByKey.get(unlockedParentKey)
+      if (parent) {
+        activeUnlockedNodes.forEach((n) => {
+          n.x = parent.x
+          n.y = parent.y
+          n.scale = 1
+        })
+      }
+    }
+
+    // Keep map in sync for positioning lookups *before* we compute link endpoints.
+    // (Links reference `d.to`, so those nodes must exist in `nodesByKey` already.)
+    if (shouldShow) {
+      activeUnlockedNodes.forEach((n) => nodesByKey.set(n.key, n))
+    } else {
+      UNLOCKED_KEYS.forEach((k) => nodesByKey.delete(k))
+    }
 
     // Links
     extraLinkSel = extraLinksG
@@ -659,19 +841,26 @@ onMounted(async () => {
     extraNodeSel = extraEnter.merge(extraNodeSel)
     extraNodeSel.transition().duration(180).style('opacity', 1)
 
-    // Keep map in sync for positioning lookups
-    ;(fullstackUnlocked as OrbitNode[]).forEach((n) => nodesByKey.set(n.key, n))
-    UNLOCKED_KEYS.forEach((k) => {
-      if (!shouldShow) nodesByKey.delete(k)
-    })
+    // Apply transforms/links right away (helps avoid a 1-frame origin flash)
+    if (shouldShow && unlockedParentKey) {
+      const parent = nodesByKey.get(unlockedParentKey)
+      if (parent) {
+        extraLinkSel
+          .attr('x1', parent.x)
+          .attr('y1', parent.y)
+          .attr('x2', (d) => nodesByKey.get(d.to)!.x)
+          .attr('y2', (d) => nodesByKey.get(d.to)!.y)
+        extraNodeSel.attr('transform', (d) => `translate(${d.x},${d.y}) scale(${d.scale})`)
+      }
+    }
   }
 
   function scheduleCloseUnlockedCluster() {
-    if (hoveredKey !== 'fullstack') return
+    if (hoveredKey !== 'fullstack' && hoveredKey !== 'cloud') return
     if (selectedKey !== null) return
     clearCloseTimer()
     closeClusterTimer = window.setTimeout(() => {
-      if (hoveredKey !== 'fullstack') return
+      if (hoveredKey !== 'fullstack' && hoveredKey !== 'cloud') return
       if (hoverInsideUnlockedCluster) return
       if (selectedKey !== null) return
       resetPan()
@@ -728,9 +917,10 @@ onMounted(async () => {
         return connected ? Math.max(1.25, d.strokeWidth) : d.strokeWidth
       })
 
+    const unlockedActive = hoveredKey === 'fullstack' || hoveredKey === 'cloud'
     extraLinkSel
-      .attr('stroke', () => (hoveredKey === 'fullstack' ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.06)'))
-      .attr('stroke-width', () => (hoveredKey === 'fullstack' ? 1.15 : 1))
+      .attr('stroke', () => (unlockedActive ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.06)'))
+      .attr('stroke-width', () => (unlockedActive ? 1.15 : 1))
 
     // Selected styling for unlocked nodes.
     extraNodeSel
@@ -814,11 +1004,12 @@ onMounted(async () => {
       node.scale = hoveredKey === key ? 1.07 : 1
     })
 
-    // Position unlocked nodes around the fullstack node (if active)
+    // Position unlocked nodes around the active parent node (if active)
     if (activeUnlockedNodes.length) {
-      const fs = nodesByKey.get('fullstack')
-      if (fs) {
-        const outAngle = Math.atan2(fs.y - cy, fs.x - cx)
+      const parentKey: OuterBaseKey = unlockedParentKey ?? (hoveredKey === 'cloud' ? 'cloud' : 'fullstack')
+      const parent = nodesByKey.get(parentKey)
+      if (parent) {
+        const outAngle = Math.atan2(parent.y - cy, parent.x - cx)
         const baseDist = Math.min(width, height) * 0.165
         const ringSize = 6
 
@@ -852,14 +1043,14 @@ onMounted(async () => {
           if (ring > 0) dist = Math.max(dist, prevRingRadius + minCenterDist * 0.92)
           if (idx === countInRing - 1) prevRingRadius = dist
 
-          n.x = fs.x + Math.cos(a) * dist
-          n.y = fs.y + Math.sin(a) * dist
+          n.x = parent.x + Math.cos(a) * dist
+          n.y = parent.y + Math.sin(a) * dist
           n.scale = 1
         })
 
         extraLinkSel
-          .attr('x1', fs.x)
-          .attr('y1', fs.y)
+          .attr('x1', parent.x)
+          .attr('y1', parent.y)
           .attr('x2', (d) => nodesByKey.get(d.to)!.x)
           .attr('y2', (d) => nodesByKey.get(d.to)!.y)
 
@@ -916,6 +1107,8 @@ onMounted(async () => {
       hoveredKey = d.key as OuterBaseKey
       isActive.value = true
       stopAnimation()
+      // Ensure base node positions/viewBox are up-to-date before seeding unlocked nodes.
+      renderFrame(animT)
       syncUnlockedData()
       renderFrame(animT)
       applyHoverStyles()
@@ -956,6 +1149,7 @@ onMounted(async () => {
       if (key === 'cloud' || key === 'fullstack' || key === 'ai') hoveredKey = key
       isActive.value = true
       stopAnimation()
+      renderFrame(animT)
       syncUnlockedData()
       applyHoverStyles()
       centerOnKey(key)
