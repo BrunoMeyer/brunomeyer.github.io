@@ -36,7 +36,7 @@
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 
-type BaseNodeKey = 'core' | 'cloud' | 'fullstack' | 'ai'
+type BaseNodeKey = 'core' | 'cloud' | 'fullstack' | 'ai' | 'datasci'
 
 const UNLOCKED_KEYS = [
   'vue',
@@ -61,7 +61,33 @@ const UNLOCKED_KEYS = [
   'docker',
   'kubernetes',
   'terraform',
-  'flux'
+  'flux',
+  'tensorflow',
+  'pytorch',
+  'scikitLearn',
+  'parallelComputing',
+  'highPerformanceComputing',
+  'bioinformatics',
+  'ollama',
+  'largeLanguageModels',
+  'huggingFace',
+  'cybersecurity',
+  'intrusionDetectionSystems',
+  'dataVisualization',
+  'highDimensionalDataManagement',
+  'federatedLearning',
+  'bioinspiredAlgorithms',
+  'evolutiveComputation',
+  'largeScaleSimilaritySearch',
+  'pandasPolars',
+  'numpy',
+  'scipy',
+  'statisticalAnalysis',
+  'dimensionalityReduction',
+  'matplotlib',
+  'seaborn',
+  'plotly',
+  'd3'
 ] as const
 
 type UnlockedNodeKey = (typeof UNLOCKED_KEYS)[number]
@@ -160,6 +186,38 @@ const AI_SVG = `<svg ${COMMON_SVG_ATTRS}>
   <path d="M7.2 9.6h0.01M16.8 9.6h0.01M12 7.1h0.01" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
 </svg>`
 
+const DATASCI_SVG = `<svg ${COMMON_SVG_ATTRS}>
+  <path d="M4.8 19.2V5.2" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M4.8 19.2h14.4" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M7.3 16.6V12.7" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M10.6 16.6V9.9" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M13.9 16.6V11.3" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M17.2 16.6V8" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+</svg>`
+
+const SHIELD_SVG = `<svg ${COMMON_SVG_ATTRS}>
+  <path d="M12 2.5 19 6v6.2c0 4.8-3.1 8.2-7 9.3-3.9-1.1-7-4.5-7-9.3V6l7-3.5Z" stroke="#FFFFFF" stroke-width="1.8" stroke-linejoin="round"/>
+  <path d="M9.2 12.2 11 14l3.8-4" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`
+
+const NETWORK_SVG = `<svg ${COMMON_SVG_ATTRS}>
+  <path d="M8 7.2a1.8 1.8 0 1 0 0 .01V7.2Zm8 0a1.8 1.8 0 1 0 0 .01V7.2ZM12 16.8a1.8 1.8 0 1 0 0 .01v-.01Z" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M9.4 8.2 11 15m3.6-6.8L13 15M9.7 7.3h4.6" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`
+
+const CHART_SVG = `<svg ${COMMON_SVG_ATTRS}>
+  <path d="M5 19.2V5.2" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M5 19.2h14" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M7.6 15.6 10.2 12.4l2.6 2.2 4-5" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M16.8 7.8h0.01" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+</svg>`
+
+const DNA_SVG = `<svg ${COMMON_SVG_ATTRS}>
+  <path d="M8 3.5c4.4 2.2 8.6 2.2 8 7.5-.5 4.6-3.6 6.3-8 9.5" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M16 3.5c-4.4 2.2-8.6 2.2-8 7.5.5 4.6 3.6 6.3 8 9.5" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M9.2 8h5.6M9.2 12h5.6M9.2 16h5.6" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
+</svg>`
+
 onMounted(async () => {
   const container = d3Container.value
   if (!container) return
@@ -192,12 +250,16 @@ onMounted(async () => {
     core: svgToDataUrl(CORE_SVG),
     cloud: svgToDataUrl(CLOUD_SVG),
     fullstack: svgToDataUrl(FULLSTACK_SVG),
-    ai: svgToDataUrl(AI_SVG)
+    ai: svgToDataUrl(AI_SVG),
+    datasci: svgToDataUrl(DATASCI_SVG)
   }
 
   const simpleIcon = (slug: string) => {
     if (slug == 'playwright') return 'https://icon.icepanel.io/Technology/svg/Playwrite.svg';
     if (slug == 'amazonaws') return 'https://icon.icepanel.io/Technology/png-shadow-512/AWS.png';
+    if (slug == 'd3dotjs') return 'https://cdn.simpleicons.org/D3/ffffff';
+    if (slug == 'matplotlib') return 'https://img.icons8.com/?size=100&id=TkX1totjFmAD&format=png&color=000000';
+    if (slug == 'seaborn') return 'https://github.com/mwaskom/seaborn/blob/master/doc/_static/logo-mark-darkbg.png?raw=true';
     return `https://cdn.simpleicons.org/${slug}/ffffff`;
   }
 
@@ -533,6 +595,376 @@ onMounted(async () => {
     }
   ]
 
+  const aiUnlocked: OrbitNode[] = [
+    {
+      key: 'tensorflow',
+      label: 'TensorFlow',
+      iconHref: simpleIcon('tensorflow'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'pytorch',
+      label: 'PyTorch',
+      iconHref: simpleIcon('pytorch'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'scikitLearn',
+      label: 'scikit‑learn',
+      iconHref: simpleIcon('scikitlearn'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'largeLanguageModels',
+      label: 'Large Language Models',
+      iconHref: svgToDataUrl(NETWORK_SVG),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'huggingFace',
+      label: 'Hugging Face',
+      iconHref: simpleIcon('huggingface'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'ollama',
+      label: 'Ollama',
+      iconHref: simpleIcon('ollama'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'parallelComputing',
+      label: 'Parallel computing',
+      iconHref: svgToDataUrl(NETWORK_SVG),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'highPerformanceComputing',
+      label: 'High Performance Computing',
+      iconHref: svgToDataUrl(NETWORK_SVG),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'bioinformatics',
+      label: 'Bioinformatics',
+      iconHref: svgToDataUrl(DNA_SVG),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'cybersecurity',
+      label: 'Cybersecurity',
+      iconHref: svgToDataUrl(SHIELD_SVG),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'intrusionDetectionSystems',
+      label: 'Intrusion Detection Systems',
+      iconHref: svgToDataUrl(SHIELD_SVG),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'dataVisualization',
+      label: 'Data visualization',
+      iconHref: svgToDataUrl(CHART_SVG),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'highDimensionalDataManagement',
+      label: 'High‑dimensional data management',
+      iconHref: svgToDataUrl(CHART_SVG),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'federatedLearning',
+      label: 'Federated Learning',
+      iconHref: svgToDataUrl(NETWORK_SVG),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'bioinspiredAlgorithms',
+      label: 'Bioinspired algorithms',
+      iconHref: svgToDataUrl(AI_SVG),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'evolutiveComputation',
+      label: 'Evolutive computation',
+      iconHref: svgToDataUrl(AI_SVG),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'largeScaleSimilaritySearch',
+      label: 'Large‑scale Similarity search',
+      iconHref: svgToDataUrl(NETWORK_SVG),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    }
+  ]
+
+  const dataUnlocked: OrbitNode[] = [
+    {
+      key: 'pandasPolars',
+      label: 'Pandas / Polars',
+      iconHref: simpleIcon('pandas'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'numpy',
+      label: 'NumPy',
+      iconHref: simpleIcon('numpy'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'scipy',
+      label: 'SciPy',
+      iconHref: simpleIcon('scipy'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'statisticalAnalysis',
+      label: 'Statistical analysis',
+      iconHref: svgToDataUrl(CHART_SVG),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'dimensionalityReduction',
+      label: 'Dimensionality reduction',
+      iconHref: svgToDataUrl(NETWORK_SVG),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'matplotlib',
+      label: 'Matplotlib',
+      iconHref: simpleIcon('matplotlib'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'seaborn',
+      label: 'Seaborn',
+      iconHref: simpleIcon('seaborn'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'plotly',
+      label: 'Plotly',
+      iconHref: simpleIcon('plotly'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    },
+    {
+      key: 'd3',
+      label: 'D3',
+      iconHref: simpleIcon('d3dotjs'),
+      box: 40,
+      iconSize: 24,
+      radius: 14,
+      bgFill: 'rgba(255,255,255,0.035)',
+      bgStroke: 'rgba(255,255,255,0.10)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
+    }
+  ]
+
   const nodes: OrbitNode[] = [
     {
       key: 'core',
@@ -589,6 +1021,20 @@ onMounted(async () => {
       x: 0,
       y: 0,
       scale: 1
+    },
+    {
+      key: 'datasci',
+      label: 'Data Science • Visualization',
+      iconHref: iconSources.datasci,
+      box: 58,
+      iconSize: 34,
+      radius: 18,
+      bgFill: 'rgba(255,255,255,0.04)',
+      bgStroke: 'rgba(255,255,255,0.12)',
+      bgStrokeWidth: 1,
+      x: 0,
+      y: 0,
+      scale: 1
     }
   ]
 
@@ -596,9 +1042,11 @@ onMounted(async () => {
     { from: 'core', to: 'cloud', stroke: 'rgba(255,255,255,0.16)', strokeWidth: 1 },
     { from: 'core', to: 'fullstack', stroke: 'rgba(255,255,255,0.16)', strokeWidth: 1 },
     { from: 'core', to: 'ai', stroke: 'rgba(255,255,255,0.16)', strokeWidth: 1 },
+    { from: 'core', to: 'datasci', stroke: 'rgba(255,255,255,0.16)', strokeWidth: 1 },
     { from: 'cloud', to: 'fullstack', stroke: 'rgba(255,255,255,0.09)', strokeWidth: 1 },
     { from: 'fullstack', to: 'ai', stroke: 'rgba(255,255,255,0.09)', strokeWidth: 1 },
-    { from: 'ai', to: 'cloud', stroke: 'rgba(255,255,255,0.09)', strokeWidth: 1 }
+    { from: 'ai', to: 'datasci', stroke: 'rgba(255,255,255,0.09)', strokeWidth: 1 },
+    { from: 'datasci', to: 'cloud', stroke: 'rgba(255,255,255,0.09)', strokeWidth: 1 }
   ]
 
   const nodesByKey = new Map(nodes.map((n) => [n.key, n]))
@@ -686,11 +1134,20 @@ onMounted(async () => {
   }
 
   function syncUnlockedData() {
-    const activeParent: OuterBaseKey | null = hoveredKey === 'cloud' || hoveredKey === 'fullstack' ? hoveredKey : null
+    const activeParent: OuterBaseKey | null =
+      hoveredKey === 'cloud' || hoveredKey === 'fullstack' || hoveredKey === 'ai' || hoveredKey === 'datasci' ? hoveredKey : null
     const shouldShow = activeParent !== null
     unlockedParentKey = activeParent
     activeUnlockedNodes =
-      activeParent === 'fullstack' ? fullstackUnlocked : activeParent === 'cloud' ? gitOpsCloudUnlocked : []
+      activeParent === 'fullstack'
+        ? fullstackUnlocked
+        : activeParent === 'cloud'
+          ? gitOpsCloudUnlocked
+          : activeParent === 'ai'
+            ? aiUnlocked
+            : activeParent === 'datasci'
+              ? dataUnlocked
+              : []
     activeUnlockedEdges = shouldShow
       ? activeUnlockedNodes.map((n) => ({
           from: activeParent as NodeKey,
@@ -791,11 +1248,17 @@ onMounted(async () => {
           return
         }
 
+        const parentForSelection: OuterBaseKey =
+          unlockedParentKey ??
+            (hoveredKey === 'cloud' || hoveredKey === 'fullstack' || hoveredKey === 'ai' || hoveredKey === 'datasci'
+              ? hoveredKey
+              : 'fullstack')
         selectedKey = d.key
-        hoveredKey = 'fullstack'
+        hoveredKey = parentForSelection
         hoverInsideUnlockedCluster = true
         isActive.value = true
         stopAnimation()
+        renderFrame(animT)
         syncUnlockedData()
         applyHoverStyles()
         centerOnKey(d.key)
@@ -856,11 +1319,11 @@ onMounted(async () => {
   }
 
   function scheduleCloseUnlockedCluster() {
-    if (hoveredKey !== 'fullstack' && hoveredKey !== 'cloud') return
+    if (hoveredKey !== 'fullstack' && hoveredKey !== 'cloud' && hoveredKey !== 'ai' && hoveredKey !== 'datasci') return
     if (selectedKey !== null) return
     clearCloseTimer()
     closeClusterTimer = window.setTimeout(() => {
-      if (hoveredKey !== 'fullstack' && hoveredKey !== 'cloud') return
+      if (hoveredKey !== 'fullstack' && hoveredKey !== 'cloud' && hoveredKey !== 'ai' && hoveredKey !== 'datasci') return
       if (hoverInsideUnlockedCluster) return
       if (selectedKey !== null) return
       resetPan()
@@ -917,7 +1380,7 @@ onMounted(async () => {
         return connected ? Math.max(1.25, d.strokeWidth) : d.strokeWidth
       })
 
-    const unlockedActive = hoveredKey === 'fullstack' || hoveredKey === 'cloud'
+    const unlockedActive = hoveredKey === 'fullstack' || hoveredKey === 'cloud' || hoveredKey === 'ai' || hoveredKey === 'datasci'
     extraLinkSel
       .attr('stroke', () => (unlockedActive ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.06)'))
       .attr('stroke-width', () => (unlockedActive ? 1.15 : 1))
@@ -939,10 +1402,12 @@ onMounted(async () => {
   let animT = 0
   let lastNow = 0
 
+  // 4 outer nodes placed evenly, rotated so none sit exactly on the bottom.
   const baseAngles: Record<OuterBaseKey, number> = {
-    cloud: -Math.PI / 2,
-    fullstack: Math.PI / 6,
-    ai: (Math.PI * 5) / 6
+    cloud: -Math.PI / 4,
+    fullstack: Math.PI / 4,
+    ai: (Math.PI * 3) / 4,
+    datasci: (-Math.PI * 3) / 4
   }
 
   function getSize() {
@@ -995,7 +1460,7 @@ onMounted(async () => {
       core.scale = 1 + Math.sin(t * 1.1) * 0.02
     }
 
-    ;(['cloud', 'fullstack', 'ai'] as const).forEach((key) => {
+    ;(['cloud', 'fullstack', 'ai', 'datasci'] as const).forEach((key) => {
       const node = nodesByKey.get(key)
       if (!node) return
       const a = baseAngles[key] + rot
@@ -1006,7 +1471,11 @@ onMounted(async () => {
 
     // Position unlocked nodes around the active parent node (if active)
     if (activeUnlockedNodes.length) {
-      const parentKey: OuterBaseKey = unlockedParentKey ?? (hoveredKey === 'cloud' ? 'cloud' : 'fullstack')
+      const parentKey: OuterBaseKey =
+        unlockedParentKey ??
+          (hoveredKey === 'cloud' || hoveredKey === 'fullstack' || hoveredKey === 'ai' || hoveredKey === 'datasci'
+            ? hoveredKey
+            : 'fullstack')
       const parent = nodesByKey.get(parentKey)
       if (parent) {
         const outAngle = Math.atan2(parent.y - cy, parent.x - cx)
@@ -1115,7 +1584,12 @@ onMounted(async () => {
     })
     .on('mouseleave', (_event, d) => {
       if (selectedKey !== null) return
-      if ((d.key as OuterBaseKey) === 'fullstack') {
+      if (
+        (d.key as OuterBaseKey) === 'fullstack' ||
+        (d.key as OuterBaseKey) === 'cloud' ||
+        (d.key as OuterBaseKey) === 'ai' ||
+        (d.key as OuterBaseKey) === 'datasci'
+      ) {
         hoverInsideUnlockedCluster = false
         scheduleCloseUnlockedCluster()
         return
@@ -1146,7 +1620,7 @@ onMounted(async () => {
       }
 
       selectedKey = key
-      if (key === 'cloud' || key === 'fullstack' || key === 'ai') hoveredKey = key
+      if (key === 'cloud' || key === 'fullstack' || key === 'ai' || key === 'datasci') hoveredKey = key
       isActive.value = true
       stopAnimation()
       renderFrame(animT)
