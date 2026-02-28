@@ -224,6 +224,32 @@ onMounted(async () => {
 
   const reduced = prefersReducedMotion()
 
+  // Performance / smoothness tradeoffs.
+  // You can override at runtime from DevTools without rebuilding:
+  //   window.__BM_TECH_ORBIT_PERF__ = { targetFps: 30 }
+  // Then reload.
+  type PerfTuning = {
+    targetFps: number
+    maxDt: number
+  }
+
+  const perf: PerfTuning = {
+    // 60 is smoothest but burns more CPU on weaker machines.
+    targetFps: 24,
+    // Cap dt to avoid big jumps after tab switches.
+    maxDt: 0.05
+  }
+
+  const perfOverride = (window as any).__BM_TECH_ORBIT_PERF__
+  if (perfOverride && typeof perfOverride === 'object') {
+    if (typeof perfOverride.targetFps === 'number' && Number.isFinite(perfOverride.targetFps)) {
+      perf.targetFps = Math.max(0, Math.min(60, perfOverride.targetFps))
+    }
+    if (typeof perfOverride.maxDt === 'number' && Number.isFinite(perfOverride.maxDt)) {
+      perf.maxDt = Math.max(0.01, Math.min(0.25, perfOverride.maxDt))
+    }
+  }
+
   // Lazy-load to avoid SSR issues & keep initial bundle smaller
   const d3 = await import('d3')
 
@@ -1038,7 +1064,18 @@ onMounted(async () => {
     }
   ]
 
-  const edges: Array<{ from: NodeKey; to: NodeKey; stroke: string; strokeWidth: number }> = [
+  const nodesByKey = new Map(nodes.map((n) => [n.key, n]))
+
+  type BaseEdge = {
+    from: NodeKey
+    to: NodeKey
+    stroke: string
+    strokeWidth: number
+    fromNode: OrbitNode
+    toNode: OrbitNode
+  }
+
+  const edges: BaseEdge[] = [
     { from: 'core', to: 'cloud', stroke: 'rgba(255,255,255,0.16)', strokeWidth: 1 },
     { from: 'core', to: 'fullstack', stroke: 'rgba(255,255,255,0.16)', strokeWidth: 1 },
     { from: 'core', to: 'ai', stroke: 'rgba(255,255,255,0.16)', strokeWidth: 1 },
@@ -1047,14 +1084,23 @@ onMounted(async () => {
     { from: 'fullstack', to: 'ai', stroke: 'rgba(255,255,255,0.09)', strokeWidth: 1 },
     { from: 'ai', to: 'datasci', stroke: 'rgba(255,255,255,0.09)', strokeWidth: 1 },
     { from: 'datasci', to: 'cloud', stroke: 'rgba(255,255,255,0.09)', strokeWidth: 1 }
-  ]
-
-  const nodesByKey = new Map(nodes.map((n) => [n.key, n]))
+  ].map((e) => ({
+    ...e,
+    fromNode: nodesByKey.get(e.from)!,
+    toNode: nodesByKey.get(e.to)!
+  }))
 
   const extraLinksG = g.append('g').attr('data-layer', 'unlocked-links')
   const extraNodesG = g.append('g').attr('data-layer', 'unlocked-nodes')
 
-  type Edge = { from: NodeKey; to: NodeKey; stroke: string; strokeWidth: number }
+  type Edge = {
+    from: NodeKey
+    to: NodeKey
+    stroke: string
+    strokeWidth: number
+    fromNode: OrbitNode
+    toNode: OrbitNode
+  }
 
   let activeUnlockedNodes: OrbitNode[] = []
   let activeUnlockedEdges: Edge[] = []
@@ -1148,12 +1194,16 @@ onMounted(async () => {
             : activeParent === 'datasci'
               ? dataUnlocked
               : []
-    activeUnlockedEdges = shouldShow
+
+    const parentNode = shouldShow && activeParent ? nodesByKey.get(activeParent) : null
+    activeUnlockedEdges = shouldShow && activeParent && parentNode
       ? activeUnlockedNodes.map((n) => ({
           from: activeParent as NodeKey,
           to: n.key,
           stroke: 'rgba(255,255,255,0.16)',
-          strokeWidth: 1
+          strokeWidth: 1,
+          fromNode: parentNode,
+          toNode: n
         }))
       : []
 
@@ -1311,8 +1361,8 @@ onMounted(async () => {
         extraLinkSel
           .attr('x1', parent.x)
           .attr('y1', parent.y)
-          .attr('x2', (d) => nodesByKey.get(d.to)!.x)
-          .attr('y2', (d) => nodesByKey.get(d.to)!.y)
+          .attr('x2', (d) => d.toNode.x)
+          .attr('y2', (d) => d.toNode.y)
         extraNodeSel.attr('transform', (d) => `translate(${d.x},${d.y}) scale(${d.scale})`)
       }
     }
@@ -1401,6 +1451,7 @@ onMounted(async () => {
   let raf = 0
   let animT = 0
   let lastNow = 0
+  let lastRenderNow = 0
 
   // 4 outer nodes placed evenly, rotated so none sit exactly on the bottom.
   const baseAngles: Record<OuterBaseKey, number> = {
@@ -1410,12 +1461,24 @@ onMounted(async () => {
     datasci: (-Math.PI * 3) / 4
   }
 
-  function getSize() {
+  // Cache size to avoid forcing layout on every animation frame.
+  let cachedWidth = 1
+  let cachedHeight = 1
+  let sizeDirty = true
+
+  function updateCachedSize() {
     const rect = container.getBoundingClientRect()
-    // Avoid 0x0 during first layout
     const width = Math.max(1, rect.width)
     const height = Math.max(1, rect.height)
-    return { width, height }
+    if (width !== cachedWidth || height !== cachedHeight) {
+      cachedWidth = width
+      cachedHeight = height
+      sizeDirty = true
+    }
+  }
+
+  function getSize() {
+    return { width: cachedWidth, height: cachedHeight }
   }
 
   function resetPan() {
@@ -1441,7 +1504,10 @@ onMounted(async () => {
     // Keep consistent with prior look (~128px at 420px frame)
     const orbitRadius = Math.min(width, height) * 0.305
 
-    svg.attr('viewBox', `0 0 ${width} ${height}`)
+    if (sizeDirty) {
+      svg.attr('viewBox', `0 0 ${width} ${height}`)
+      sizeDirty = false
+    }
 
     const rot = t * 0.18
     const breathing = 1 + Math.sin(t * 1.25) * 0.03
@@ -1520,8 +1586,8 @@ onMounted(async () => {
         extraLinkSel
           .attr('x1', parent.x)
           .attr('y1', parent.y)
-          .attr('x2', (d) => nodesByKey.get(d.to)!.x)
-          .attr('y2', (d) => nodesByKey.get(d.to)!.y)
+          .attr('x2', (d) => d.toNode.x)
+          .attr('y2', (d) => d.toNode.y)
 
         extraNodeSel.attr('transform', (d) => `translate(${d.x},${d.y}) scale(${d.scale})`)
       }
@@ -1531,24 +1597,31 @@ onMounted(async () => {
     g.attr('transform', `translate(${panX},${panY})`)
 
     linkSel
-      .attr('x1', (d) => nodesByKey.get(d.from)!.x)
-      .attr('y1', (d) => nodesByKey.get(d.from)!.y)
-      .attr('x2', (d) => nodesByKey.get(d.to)!.x)
-      .attr('y2', (d) => nodesByKey.get(d.to)!.y)
+      .attr('x1', (d) => d.fromNode.x)
+      .attr('y1', (d) => d.fromNode.y)
+      .attr('x2', (d) => d.toNode.x)
+      .attr('y2', (d) => d.toNode.y)
 
     nodeSel.attr('transform', (d) => `translate(${d.x},${d.y}) scale(${d.scale})`)
   }
 
   function tick(now: number) {
     if (!lastNow) lastNow = now
-    const dt = Math.min(0.05, (now - lastNow) / 1000)
+    const dt = Math.min(perf.maxDt, (now - lastNow) / 1000)
     lastNow = now
     animT += dt
-    renderFrame(animT)
+
+    const minFrameMs = perf.targetFps > 0 ? 1000 / perf.targetFps : Infinity
+    const shouldRender = sizeDirty || now - lastRenderNow >= minFrameMs
+    if (shouldRender) {
+      renderFrame(animT)
+      lastRenderNow = now
+    }
     raf = requestAnimationFrame(tick)
   }
 
   // Initial draw
+  updateCachedSize()
   renderFrame(0)
   syncUnlockedData()
   applyHoverStyles()
@@ -1561,11 +1634,24 @@ onMounted(async () => {
 
   function startAnimation() {
     if (reduced) return
+    if (perf.targetFps <= 0) return
     if (raf) return
     raf = requestAnimationFrame(tick)
   }
 
   startAnimation()
+
+  function handleVisibilityChange() {
+    if (typeof document === 'undefined') return
+    if (document.hidden) {
+      stopAnimation()
+      return
+    }
+    // Only resume when nothing is actively hovered/selected.
+    if (!reduced && perf.targetFps > 0 && selectedKey === null && hoveredKey === null) startAnimation()
+  }
+
+  document.addEventListener('visibilitychange', handleVisibilityChange, { passive: true })
 
   // Pause + highlight on hover for non-core nodes
   nodeSel
@@ -1631,6 +1717,7 @@ onMounted(async () => {
     })
 
   const ro = new ResizeObserver(() => {
+    updateCachedSize()
     // Re-render on resize (even if reduced motion)
     renderFrame(animT)
   })
@@ -1641,6 +1728,7 @@ onMounted(async () => {
     ro.disconnect()
     clearCloseTimer()
     isActive.value = false
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
     container.replaceChildren()
   }
 })

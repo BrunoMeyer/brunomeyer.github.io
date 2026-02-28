@@ -1,8 +1,6 @@
 # Public Projects & Achievements
 
-## Projects
-
-### GPU-RSFK (GPU Random Sample Forest KNN)
+## GPU-RSFK (GPU Random Sample Forest KNN)
 
 GPU-accelerated (CUDA) approximate k-nearest-neighbor graph construction, exposing a Python API for large-scale workloads.
 
@@ -11,7 +9,7 @@ GPU-accelerated (CUDA) approximate k-nearest-neighbor graph construction, exposi
 - Tech: CUDA + C/C++ core, Python bindings; Docker/Docker Compose support for reproducible builds.
 - Links: repo [github.com/BrunoMeyer/gpu-rsfk](https://github.com/BrunoMeyer/gpu-rsfk) (see also `DOCKER.md` and `examples/` in the repo)
 
-### MENTORED Testbed
+## MENTORED Testbed
 
 Cybersecurity experimentation testbed focused on repeatable “from modeling to experimentation” workflows (including DDoS and zero-day research contexts) under the MENTORED project.
 
@@ -20,7 +18,7 @@ Cybersecurity experimentation testbed focused on repeatable “from modeling to 
 - Tech: a mix of TypeScript + Python + web assets; container-first approach.
 - Links: repo [github.com/mentoredtestbed/MENTORED-Testbed](https://github.com/mentoredtestbed/MENTORED-Testbed) (project site: [mentored.dcc.ufmg.br](https://mentored.dcc.ufmg.br/))
 
-### Microbiome Network Analysis (Machine Learning)
+## Microbiome Network Analysis (Machine Learning)
 
 Pipeline + visualization artifacts for microbial community network analysis, developed in the context of an academic publication on anaerobic reactors.
 
@@ -29,14 +27,14 @@ Pipeline + visualization artifacts for microbial community network analysis, dev
 - Tech: Python + HTML + shell scripts; includes a Dockerfile for execution.
 - Links: repo [github.com/BrunoMeyer/Microbiome-Network-with-Machine-Learning](https://github.com/BrunoMeyer/Microbiome-Network-with-Machine-Learning)
 
-### SSMT-IDS
+## SSMT-IDS
 
 Intrusion detection work applying deep learning techniques.
 
 - Status: the provided GitHub link currently returns 404, so I couldn’t pull README details automatically.
 - Links: [github.com/BrunoMeyer/ssmt-ids](https://github.com/BrunoMeyer/ssmt-ids/)
 
-### JMSA 2 (Java Mass Spectrometry Analyzer)
+## JMSA 2 (Java Mass Spectrometry Analyzer)
 
 Desktop Java application for analyzing MALDI-TOF mass spectrometry data for microorganism identification.
 
@@ -45,7 +43,7 @@ Desktop Java application for analyzing MALDI-TOF mass spectrometry data for micr
 - Tech: Java (desktop GUI), supporting libraries for charts/clustering/config.
 - Links: repo [github.com/BrunoMeyer/jmsa](https://github.com/BrunoMeyer/jmsa) (wiki: [github.com/BrunoMeyer/jmsa/wiki](https://github.com/BrunoMeyer/jmsa/wiki))
 
-### HIM (Healthcare Intelligent Map)
+## HIM (Healthcare Intelligent Map)
 
 Front-end data visualization tool for healthcare reports: users upload a spreadsheet and the processing happens locally in the browser.
 
@@ -54,7 +52,7 @@ Front-end data visualization tool for healthcare reports: users upload a spreads
 - Tech: JavaScript + HTML/CSS; no centralized backend required.
 - Links: repo [github.com/BrunoMeyer/healthcare_inteligent_map](https://github.com/BrunoMeyer/healthcare_inteligent_map)
 
-## Highlights
+# Highlights
 
 - Led a development team to implement **MENTORED Testbed**: a cybersecurity testbed and web system with a cloud-provider-like workflow (provisioning, access, monitoring) for multi-cluster Kubernetes environments. Intended as a self-hosted alternative to cloud providers.
 - Obtained research funding to present articles at relevant international conferences.
